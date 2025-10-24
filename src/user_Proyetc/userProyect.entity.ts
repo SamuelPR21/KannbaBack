@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToMany, ManyToOn
 import { Proyect } from "../proyect/proyect.entity";
 import { User } from "../users/users.entity";
 import {TaskProyect} from "../task/Entities/task-proyect.entity"
-
+import { Role } from "../role/role.entity";
 
 @Entity('user_proyect')
 export class UserProyect {
@@ -17,12 +17,10 @@ export class UserProyect {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @Column({
-        type: 'enum',
-        enum: ['MANAGER', 'COLABORATOR'],
-        default: 'MANAGER',
-      })
-    rol: string;
+    @ManyToOne(() => Role, (role) => role.userProyects)
+    @JoinColumn({ name: 'role_id' })
+    role: Role;
+
 
     @OneToMany(() => TaskProyect, (taskProyect) => taskProyect.userProyect)
     taskProyect: TaskProyect[];

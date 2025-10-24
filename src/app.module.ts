@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import {CategoryModule} from "./category/category.module";
 import {ProyectModule} from "./proyect/proyect.module"
+import { RolModule } from './role/rol.module';
 
 
 @Module({
@@ -14,6 +15,7 @@ import {ProyectModule} from "./proyect/proyect.module"
     DatabaseModule,
     CategoryModule,
     ProyectModule,
+    RolModule,
 
   ],
 })
