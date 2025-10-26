@@ -9,7 +9,7 @@ import { Category } from "src/category/category.entity";
     imports: [TypeOrmModule.forFeature([Proyect, Category])],
     controllers: [ProyectController],
     providers: [ProyectService],
-    exports: [ProyectService],
+    exports: [ProyectService, TypeOrmModule.forFeature([Proyect])],
 })
 export class ProyectModule {}
 

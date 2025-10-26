@@ -7,6 +7,7 @@ import { StateModule } from './State/state.module';
 import { TaskModule } from './task/task.module';
 import {ProyectModule} from "./proyect/proyect.module"
 import { RolModule } from './role/rol.module';
+import { UserProyectModule } from './user_Proyetc/userProyect.module';
 
 
 @Module({
@@ -22,6 +23,7 @@ import { RolModule } from './role/rol.module';
     TaskModule,
     ProyectModule,
     RolModule,
+    UserProyectModule,
 
   ],
 })
