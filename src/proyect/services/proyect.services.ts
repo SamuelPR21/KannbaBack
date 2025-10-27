@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from "typeorm";
+import { Repository, DataSource } from "typeorm";
 import { Proyect } from "../proyect.entity";
 import { ProyectRequestDTO } from "../DTO/proyectRequest.dto";
 import { ProyectResponseDTO } from "../DTO/proyectResponse.dto";
 import { Category } from "src/category/category.entity";
+import { User } from "src/users/users.entity";
+import { Role } from "src/role/role.entity";
+import { UserProyect } from "src/user_Proyetc/userProyect.entity";
 
 @Injectable()
 export class ProyectService{
@@ -13,6 +16,13 @@ export class ProyectService{
          private readonly proyectRepository: Repository<Proyect>,
         @InjectRepository(Category)
         private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        @InjectRepository(Role)
+        private readonly roleRepository: Repository<Role>,
+        @InjectRepository(UserProyect)
+        private readonly userProyectRepository: Repository<UserProyect>,
+        private readonly dataSource: DataSource,
     ) {}
 
     async getProyets(): Promise<ProyectResponseDTO[]> {
@@ -44,26 +54,64 @@ export class ProyectService{
         }
     }
 
-    async createProyect(proyectRequestDTO: ProyectRequestDTO): Promise<ProyectResponseDTO>{
-        const category = await this.categoryRepository.findOne({
-            where: { id: proyectRequestDTO.categoryId },
-        });
+    async createProyect(proyectRequestDTO: ProyectRequestDTO, userId: number): Promise<ProyectResponseDTO>{
 
-        if (!category) {
-            throw new NotFoundException(`Category with ID ${proyectRequestDTO.categoryId} not found`);
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const category = await this.categoryRepository.findOne({
+                where: { id: proyectRequestDTO.categoryId },
+            });
+    
+            if (!category) {
+                throw new NotFoundException(`Category with ID ${proyectRequestDTO.categoryId} not found`);
+            }
+
+            const newProyect = queryRunner.manager.create(Proyect,{
+                name: proyectRequestDTO.name,
+                category,
+            })
+            
+            const savedProyect = await queryRunner.manager.save(newProyect);
+
+            const user = await queryRunner.manager.findOne(User,{
+                where: { id: userId },
+            })
+
+            if (!user) {
+                throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
+            }
+
+            const  managerRole = await queryRunner.manager.findOne(Role,{where: { name: 'MANAGER' }});
+            if (!managerRole) {
+                throw new NotFoundException('Rol MANAGER no configurado');
+            }
+
+            const userProyect = queryRunner.manager.create(UserProyect,{
+                user,
+                proyect: savedProyect,
+                role: managerRole,
+            })
+
+            await queryRunner.manager.save(userProyect);
+
+            await queryRunner.commitTransaction();
+
+            return {
+                id: savedProyect.id,
+                name: savedProyect.name,
+                categoryId: category.id,
+            }
+            
+        }catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        }finally{
+            await queryRunner.release();
         }
-
-        const newProyect = this.proyectRepository.create({
-            name: proyectRequestDTO.name,
-            category: category,
-        });
-
-        const savedProyect = await this.proyectRepository.save(newProyect);
-        return{
-            id: savedProyect.id,
-            name: savedProyect.name,
-            categoryId: category.id,
-        }
+        
     }
 
     async deleteProyect(id: number): Promise<void> {

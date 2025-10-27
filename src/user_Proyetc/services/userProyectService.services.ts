@@ -9,6 +9,7 @@ import { UserProyectResponseDTO } from "../DTO/userProyectResponse.dto";
 import { UserProyectRequestDTO } from "../DTO/userProyectRequest.dto";
 import { UserByProyectResponseDTO } from "../DTO/UserByProyectResposeDTO.dto";
 import { ProyectByUserResponseDTO } from "../DTO/ProyectByUserResponseDTO.dto";
+import { AssigUserToProyectDTO } from "../DTO/AssigUserToProyectDTO.dto";
 
 
 @Injectable()
@@ -25,36 +26,36 @@ export class UserProyectService {
     ){}
 
 
-    async createUserProyect(userProyectRequestDTO: UserProyectRequestDTO): Promise<UserProyectResponseDTO> {
+    async createUserProyect(assigUserToProyectDTO: AssigUserToProyectDTO): Promise<UserProyectResponseDTO> {
         const existingRole = await this.roleRepository.findOne({
-            where: { id: userProyectRequestDTO.roleId },
+            where: { id: assigUserToProyectDTO.roleId },
         })
 
         if (!existingRole) {
-            throw new NotFoundException(`El rol con ID "${userProyectRequestDTO.proyectId}" no existe.`);
+            throw new NotFoundException(`El rol con ID "${assigUserToProyectDTO.proyectId}" no existe.`);
         }
 
         const existingUser = await this.userRepository.findOne({
-            where: { id: userProyectRequestDTO.userId },
+            where: { username: assigUserToProyectDTO.username },
         })
 
         if (!existingUser) {
-            throw new NotFoundException(`El usuario con ID "${userProyectRequestDTO.userId}" no existe.`);
+            throw new NotFoundException(`El usuario con ID "${assigUserToProyectDTO.username}" no existe.`);
         }
 
         const existingProyect = await this.proyectRepository.findOne({
-            where: { id: userProyectRequestDTO.proyectId },
+            where: { id: assigUserToProyectDTO.proyectId },
         })
 
         if (!existingProyect) {
-            throw new NotFoundException(`El proyecto con ID "${userProyectRequestDTO.proyectId}" no existe.`);
+            throw new NotFoundException(`El proyecto con ID "${assigUserToProyectDTO.proyectId}" no existe.`);
         }
 
 
         const existingRelation = await this.userProyectRepository.findOne({
             where: {
-                user: { id: userProyectRequestDTO.userId },
-                proyect: { id: userProyectRequestDTO.proyectId },
+                user: { username: assigUserToProyectDTO.username },
+                proyect: { id: assigUserToProyectDTO.proyectId  },
             },
             relations: ['user', 'proyect'],
         });
@@ -64,15 +65,12 @@ export class UserProyectService {
         }
         
 
-        const userProyct = this.userProyectRepository.create({
-            role: existingRole,
+        const newUserProyect = this.userProyectRepository.create({
             user: existingUser,
             proyect: existingProyect,
-
-            ...userProyectRequestDTO
-
-        })
-        const savedUserProyect = await this.userProyectRepository.save(userProyct);
+            role: existingRole,
+        });
+        const savedUserProyect = await this.userProyectRepository.save(newUserProyect);
         return new UserProyectResponseDTO(savedUserProyect);
    
     }

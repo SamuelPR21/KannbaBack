@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, ParseIntPipe, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, ParseIntPipe, Delete, Patch, Req } from '@nestjs/common';
 import { ProyectService } from '../services/proyect.services';
 import { ProyectRequestDTO } from '../DTO/proyectRequest.dto';
 
@@ -28,15 +28,11 @@ export class ProyectController {
     }
 
     @Post()
-    createProyect(@Body() proyectRequestDTO: ProyectRequestDTO) {
-        try {
-            return this.proyectService.createProyect(proyectRequestDTO);
-
-        }catch (error) {
-            console.error('Error creating proyect:', error);
-            throw error;
-        }
+    async createProject(@Body() dto: ProyectRequestDTO, @Req() req) {
+        const userId = req.user.id;
+        return this.proyectService.createProyect(dto, userId);
     }
+
 
     @Delete('/:id')
     deleteProyect(@Param('id', ParseIntPipe) id: number) {

@@ -7,7 +7,7 @@ import { UsersModule } from './users/users.module';
 import { StateModule } from './State/state.module';
 import { TaskModule } from './task/task.module';
 import { ProyectModule } from "./proyect/proyect.module";
-import { RolModule } from './role/rol.module';
+import { RoleModule } from './role/rol.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthModule } from './auth/auth.module'; 
@@ -23,7 +23,7 @@ import { UserProyectModule } from './user_Proyetc/userProyect.module';
     StateModule,
     TaskModule,
     ProyectModule,
-    RolModule,
+    RoleModule,
     AuthModule, 
   ],
   providers: [

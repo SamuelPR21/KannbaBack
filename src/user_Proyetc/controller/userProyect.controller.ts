@@ -1,18 +1,24 @@
-import { Delete, Get, Param, ParseIntPipe, Patch, Post } from "@nestjs/common";
+import { Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
 import { Body, Controller } from "@nestjs/common";
-import { UserProyectService } from "../services/userProyectService.dto";
+import { UserProyectService } from "../services/userProyectService.services";
 import { UserProyectRequestDTO } from "../DTO/userProyectRequest.dto";
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ProyectRoleGuard } from "src/common/guards/proyect-role.guard";
+import { ProyectRoles } from "src/common/decorator/proyect-role.decorator";
+import { AssigUserToProyectDTO } from "../DTO/AssigUserToProyectDTO.dto";
 
 
 @Controller('/user-proyect')
+@UseGuards(JwtAuthGuard, ProyectRoleGuard)
 export class UserProyectController {
     constructor(private readonly userProyectService: UserProyectService,) 
     {}
 
     @Post()
-    async createUserProyect( @Body() userProyectRequestDTO: UserProyectRequestDTO ){ 
+    @ProyectRoles('MANAGER')
+    async createUserProyect( @Body() assigUserToProyectDTO: AssigUserToProyectDTO ){ 
         try{
-            return this.userProyectService.createUserProyect(userProyectRequestDTO);
+            return this.userProyectService.createUserProyect(assigUserToProyectDTO);
         }catch(err){
             console.error('error durante la creacion de la relacion user-proyect:', err);
             throw err;
@@ -20,7 +26,9 @@ export class UserProyectController {
    
     }
 
+    
     @Get('/listUser/:proyectId')
+    @ProyectRoles('MANAGER')
     async getUsersByProyectId(@Param('proyectId', ParseIntPipe) proyectId: number) {
         try {
             return this.userProyectService.listAllUserByProyect(proyectId);
@@ -41,6 +49,7 @@ export class UserProyectController {
     }
 
     @Delete('/:id')
+    @ProyectRoles('MANAGER')
     async deleteUserProyect(@Param('id', ParseIntPipe) id: number) {
         try {
             return this.userProyectService.deleteUserProyect(id);
@@ -51,9 +60,10 @@ export class UserProyectController {
     }
 
 
-    @Patch('/:idUser/:idProyect')
+    @Patch('/:idUser/:proyectId')
+    @ProyectRoles('MANAGER')
     async updateUserProyectRole(@Param('idUser', ParseIntPipe) idUser: number,
-                                @Param('idProyect', ParseIntPipe) idProyect: number,
+                                @Param('proyectId', ParseIntPipe) idProyect: number,
                                 @Body() userProyectRequestDTO: UserProyectRequestDTO) {
 
         try{
