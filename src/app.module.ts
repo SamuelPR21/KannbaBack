@@ -10,7 +10,9 @@ import { ProyectModule } from "./proyect/proyect.module";
 import { RolModule } from './role/rol.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { AuthModule } from './auth/auth.module'; // ⬅️ IMPORTA ESTO
+import { AuthModule } from './auth/auth.module'; 
+import { UserProyectModule } from './user_Proyetc/userProyect.module';
+
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { AuthModule } from './auth/auth.module'; // ⬅️ IMPORTA ESTO
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    UserProyectModule,
+
   ],
 })
 export class AppModule {}
