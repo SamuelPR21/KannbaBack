@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Query, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
-import { TaskProyectService } from './task-proyect.service';
-import { CreateTaskProyectDto } from './DTO/create-task-proyect.dto';
-import { UpdateTaskProyectDto } from './DTO/update-task-proyect.dto';
-import { ProyectRoles } from '../common/decorator/proyect-role.decorator';
-import { ProyectRoleGuard } from '../common/guards/proyect-role.guard'
+import { TaskProyectService } from '../service/task-proyect.service';
+import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
+import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
+import { ProyectRoles } from '../../common/decorator/proyect-role.decorator';
+import { ProyectRoleGuard } from '../../common/guards/proyect-role.guard'
 
-@Controller('proyects/:proyectId/tasks')
-@UseGuards(ProyectRoleGuard) // el guard ya revisa el rol contra el proyecto
+@Controller('/proyects/:proyectId/tasks')
+@UseGuards(ProyectRoleGuard) 
 export class TaskProyectController {
   constructor(private readonly service: TaskProyectService) {}
 
@@ -38,7 +38,7 @@ export class TaskProyectController {
   }
 
   // COLABORATOR/MANAGER: Ver info de una tarea del proyecto
-  @Get(':taskId')
+  @Get('/:taskId')
   @ProyectRoles('MANAGER', 'COLABORATOR')
   async getById(
     @Param('proyectId') proyectId: number,
@@ -49,7 +49,7 @@ export class TaskProyectController {
   }
 
   // MANAGER: Editar tarea (PATCH)
-  @Patch(':taskId')
+  @Patch('/:taskId')
   @ProyectRoles('MANAGER')
   async patch(
     @Param('proyectId') proyectId: number,
@@ -61,7 +61,7 @@ export class TaskProyectController {
   }
 
   // MANAGER: Eliminar tarea
-  @Delete(':taskId')
+  @Delete('/:taskId')
   @ProyectRoles('MANAGER')
   async delete(
     @Param('proyectId') proyectId: number,

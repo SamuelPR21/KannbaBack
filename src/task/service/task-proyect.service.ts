@@ -1,11 +1,11 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TaskProyect } from './Entities/task-proyect.entity';
-import { State } from '../State/state.entity';
-import { UserProyect } from '../user_Proyetc/userProyect.entity';
-import { CreateTaskProyectDto } from './DTO/create-task-proyect.dto';
-import { UpdateTaskProyectDto } from './DTO/update-task-proyect.dto';
+import { TaskProyect } from '../Entities/task-proyect.entity';
+import { State } from '../../State/state.entity';
+import { UserProyect } from '../../user_Proyetc/userProyect.entity';
+import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
+import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
 
 @Injectable()
 export class TaskProyectService {

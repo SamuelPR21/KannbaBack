@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { TaskPersonalService } from './task-personal.service';
-import { CreateTaskPersonalDto } from './DTO/create-task-personal.dto';
-import { UpdateTaskPersonalDto } from './DTO/update-task-personal.dto';
+import { TaskPersonalService } from '../service/task-personal.service';
+import { CreateTaskPersonalDto } from '../DTO/taskPersonal/create-task-personal.dto';
+import { UpdateTaskPersonalDto } from '../DTO/taskPersonal/update-task-personal.dto';
 
 @Controller('task-personal')
 export class TaskPersonalController {

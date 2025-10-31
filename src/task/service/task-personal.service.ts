@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TaskPersonal } from './Entities/task-personal.entity';
-import { User } from '../users/users.entity';
-import { State } from '../State/state.entity';
-import { CreateTaskPersonalDto } from './DTO/create-task-personal.dto';
-import { UpdateTaskPersonalDto } from './DTO/update-task-personal.dto';
+import { TaskPersonal } from '../Entities/task-personal.entity';
+import { User } from '../../users/users.entity';
+import { State } from '../../State/state.entity';
+import { CreateTaskPersonalDto } from '../DTO/taskPersonal/create-task-personal.dto';
+import { UpdateTaskPersonalDto } from '../DTO/taskPersonal/update-task-personal.dto';
 
 @Injectable()
 export class TaskPersonalService {
