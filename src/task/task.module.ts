@@ -1,15 +1,28 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskPersonal } from './Entities/task-personal.entity';
+import { TaskProyect } from './Entities/task-proyect.entity';
 import { User } from '../users/users.entity';
 import { State } from '../State/state.entity';
+import { UserProyect } from '../user_Proyetc/userProyect.entity';
 import { TaskPersonalController } from './task-personal.controller';
 import { TaskPersonalService } from './task-personal.service';
+import { TaskProyectController } from './task-proyect.controller';
+import { TaskProyectService } from './task-proyect.service';
+import { ProyectRoleGuard } from '../common/guards/proyect-role.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TaskPersonal, User, State])],
-  controllers: [TaskPersonalController],
-  providers: [TaskPersonalService],
-  exports: [TaskPersonalService],
+  imports: [
+    TypeOrmModule.forFeature([
+      TaskPersonal,
+      TaskProyect,
+      User,
+      State,
+      UserProyect, // necesario para el guard y las validaciones
+    ]),
+  ],
+  controllers: [TaskPersonalController, TaskProyectController],
+  providers: [TaskPersonalService, TaskProyectService, ProyectRoleGuard],
+  exports: [TaskPersonalService, TaskProyectService],
 })
 export class TaskModule {}
