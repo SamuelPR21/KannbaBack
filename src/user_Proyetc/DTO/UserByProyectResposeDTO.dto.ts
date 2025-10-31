@@ -1,4 +1,5 @@
 export class UserByProyectResponseDTO {
+    userProyectId: number;
     userId: number;
     userName: string;
     email: string;

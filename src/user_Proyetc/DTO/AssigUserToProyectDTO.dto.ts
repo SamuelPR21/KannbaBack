@@ -1,17 +1,16 @@
-import { IsNumber, IsString } from "class-validator";
-
+import { IsNumber } from "class-validator";
 
 export class AssigUserToProyectDTO {
-    @IsNumber()
-    proyectId: number;
+  @IsNumber()
+  userId: number;   // ✅ corregido (antes estaba "username")
 
-    @IsNumber()
-    username: string;
+  @IsNumber()
+  proyectId: number;
 
-    @IsNumber()
-    roleId: number;
+  @IsNumber()
+  roleId: number;
 
-    constructor(partial: Partial<AssigUserToProyectDTO>) {
-        Object.assign(this, partial);
-    }
+  constructor(partial: Partial<AssigUserToProyectDTO>) {
+    Object.assign(this, partial);
+  }
 }
