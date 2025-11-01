@@ -10,6 +10,7 @@ import { TaskPersonalService } from './task-personal.service';
 import { TaskProyectController } from './task-proyect.controller';
 import { TaskProyectService } from './task-proyect.service';
 import { ProyectRoleGuard } from '../common/guards/proyect-role.guard';
+import { AuthModule } from '../auth/auth.module'; 
 
 @Module({
   imports: [
@@ -18,8 +19,9 @@ import { ProyectRoleGuard } from '../common/guards/proyect-role.guard';
       TaskProyect,
       User,
       State,
-      UserProyect, // necesario para el guard y las validaciones
+      UserProyect,
     ]),
+    AuthModule,
   ],
   controllers: [TaskPersonalController, TaskProyectController],
   providers: [TaskPersonalService, TaskProyectService, ProyectRoleGuard],

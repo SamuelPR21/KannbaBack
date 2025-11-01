@@ -2,7 +2,7 @@ import { IsNumber } from "class-validator";
 
 export class AssigUserToProyectDTO {
   @IsNumber()
-  userId: number;   // ✅ corregido (antes estaba "username")
+  userId: number;   
 
   @IsNumber()
   proyectId: number;
