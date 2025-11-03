@@ -25,6 +25,6 @@ import { AuthModule } from '../auth/auth.module';
   ],
   controllers: [TaskPersonalController, TaskProyectController],
   providers: [TaskPersonalService, TaskProyectService, ProyectRoleGuard],
-  exports: [TaskPersonalService, TaskProyectService],
+  exports: [TaskPersonalService, TaskProyectService, TypeOrmModule],
 })
 export class TaskModule {}

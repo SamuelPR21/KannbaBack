@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./DTO/create-user.dto";
 import { LoginUserDto } from "./DTO/login-user.dto";
 import { UpdateUserDto } from "./DTO/update-user.dto";
+import { UserProgressResponseDTO } from "./DTO/user-progress-response.dto";
 
 @Controller('/users')
 export class UsersController {
@@ -39,5 +40,11 @@ export class UsersController {
   async deleteUser(@Param('id') id: number) {
     await this.usersService.delete(id);
     return { message: 'Usuario eliminado correctamente' };
+  }
+
+  @Get('/:id/progress')
+  async getUserProgress(@Param('id') userId:number, @Query('state')state: string): Promise<UserProgressResponseDTO> {
+    const stateName = state?.toUpperCase() || 'DONE';
+    return this.usersService.getUserProgress(userId, stateName);
   }
 }
