@@ -1,72 +1,65 @@
-import { Controller, Get, Param, Query, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
-import { TaskProyectService } from '../service/task-proyect.service';
+// src/task/task-proyect.controller.ts
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ProyectRoleGuard } from 'src/common/guards/proyect-role.guard';
+import { ProyectRoles } from 'src/common/decorator/proyect-role.decorator';
+
+import { TaskProyectService } from './../service/task-proyect.service';
 import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
 import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
-import { ProyectRoles } from '../../common/decorator/proyect-role.decorator';
-import { ProyectRoleGuard } from '../../common/guards/proyect-role.guard'
+import { CreateTaskProyectResponseDTO } from '../DTO/taskProeyct/create-task-proyect.response.dto';
+import { ListTaskProyectItemDTO } from '../DTO/taskProeyct/list-task-proyect.response.dto';
+import { DetailTaskProyectResponseDTO } from '../DTO/taskProeyct/detail-task-proyect.response.dto';
+import { UpdateTaskProyectResponseDTO } from '../DTO/taskProeyct/update-task-proyect.response.dto';
 
-@Controller('/proyects/:proyectId/tasks')
-@UseGuards(ProyectRoleGuard) 
+@Controller('proyects/:proyectId/tasks')
+@UseGuards(JwtAuthGuard, ProyectRoleGuard)
 export class TaskProyectController {
-  constructor(private readonly service: TaskProyectService) {}
+  constructor(private readonly taskService: TaskProyectService) {}
 
-  // MANAGER: Añadir tarea
   @Post()
   @ProyectRoles('MANAGER')
   async create(
-    @Param('proyectId') proyectId: number,
+    @Param('proyectId', ParseIntPipe) proyectId: number,
     @Body() dto: CreateTaskProyectDto,
-  ) {
-    const task = await this.service.create(Number(proyectId), dto);
-    return { message: 'Tarea creada correctamente', task };
+  ): Promise<CreateTaskProyectResponseDTO> {
+    return this.taskService.create(proyectId, dto);
   }
 
-  // MANAGER/COLABORATOR: Listar tareas de un proyecto (con filtro opcional por estado)
   @Get()
   @ProyectRoles('MANAGER', 'COLABORATOR')
   async list(
-    @Param('proyectId') proyectId: number,
-    @Query('state') state?: string,
-  ) {
-    const pid = Number(proyectId);
-    if (state) {
-      const tasks = await this.service.listByProyectAndState(pid, state);
-      return { tasks };
-    }
-    const tasks = await this.service.listByProyect(pid);
-    return { tasks };
+    @Param('proyectId', ParseIntPipe) proyectId: number,
+    @Query('state') state?: 'BACKLOG' | 'TO_DO' | 'DOING' | 'DONE',
+  ): Promise<ListTaskProyectItemDTO[]> {
+    return this.taskService.listByProyect(proyectId, state);
   }
 
-  // COLABORATOR/MANAGER: Ver info de una tarea del proyecto
   @Get('/:taskId')
   @ProyectRoles('MANAGER', 'COLABORATOR')
-  async getById(
-    @Param('proyectId') proyectId: number,
-    @Param('taskId') taskId: number,
-  ) {
-    const task = await this.service.getById(Number(proyectId), Number(taskId));
-    return { task };
+  async detail(
+    @Param('proyectId', ParseIntPipe) proyectId: number,
+    @Param('taskId', ParseIntPipe) taskId: number,
+  ): Promise<DetailTaskProyectResponseDTO> {
+    return this.taskService.getById(proyectId, taskId);
   }
 
-  // MANAGER: Editar tarea (PATCH)
   @Patch('/:taskId')
   @ProyectRoles('MANAGER')
   async patch(
-    @Param('proyectId') proyectId: number,
-    @Param('taskId') taskId: number,
+    @Param('proyectId', ParseIntPipe) proyectId: number,
+    @Param('taskId', ParseIntPipe) taskId: number,
     @Body() dto: UpdateTaskProyectDto,
-  ) {
-    const updated = await this.service.patch(Number(proyectId), Number(taskId), dto);
-    return { message: 'Tarea actualizada correctamente', updated };
+  ): Promise<UpdateTaskProyectResponseDTO> {
+    return this.taskService.patch(proyectId, taskId, dto);
   }
 
-  // MANAGER: Eliminar tarea
   @Delete('/:taskId')
   @ProyectRoles('MANAGER')
-  async delete(
-    @Param('proyectId') proyectId: number,
-    @Param('taskId') taskId: number,
-  ) {
-    return await this.service.remove(Number(proyectId), Number(taskId));
+  async remove(
+    @Param('proyectId', ParseIntPipe) proyectId: number,
+    @Param('taskId', ParseIntPipe) taskId: number,
+  ): Promise<{ message: string }> {
+    return this.taskService.remove(proyectId, taskId);
   }
 }
