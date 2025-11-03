@@ -1,19 +1,15 @@
-// src/task/task-proyect.service.ts
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { TaskProyect } from './Entities/task-proyect.entity';
-import { UserProyect } from '../user_Proyetc/userProyect.entity';
-import { State } from '../State/state.entity';
-
-import { CreateTaskProyectDto } from './DTO/create-task-proyect.dto';
-import { UpdateTaskProyectDto } from './DTO/update-task-proyect.dto';
-
-import { CreateTaskProyectResponseDTO } from './DTO/create-task-proyect.response.dto';     
-import { ListTaskProyectItemDTO } from './DTO/list-task-proyect.response.dto';
-import { DetailTaskProyectResponseDTO } from './DTO/detail-task-proyect.response.dto';
-import { UpdateTaskProyectResponseDTO } from './DTO/update-task-proyect.response.dto';
+import { TaskProyect } from './../Entities/task-proyect.entity';
+import { UserProyect } from '../../user_Proyetc/userProyect.entity';
+import { State } from '../../State/state.entity';
+import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
+import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
+import { CreateTaskProyectResponseDTO } from '../DTO/taskProeyct/create-task-proyect.response.dto';
+import { ListTaskProyectItemDTO } from '../DTO/taskProeyct/list-task-proyect.response.dto';
+import { DetailTaskProyectResponseDTO } from '../DTO/taskProeyct/detail-task-proyect.response.dto';
+import { UpdateTaskProyectResponseDTO } from '../DTO/taskProeyct/update-task-proyect.response.dto';
 
 @Injectable()
 export class TaskProyectService {

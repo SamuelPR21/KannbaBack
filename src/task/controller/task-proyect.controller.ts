@@ -4,14 +4,13 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProyectRoleGuard } from 'src/common/guards/proyect-role.guard';
 import { ProyectRoles } from 'src/common/decorator/proyect-role.decorator';
 
-import { TaskProyectService } from './task-proyect.service';
-import { CreateTaskProyectDto } from './DTO/create-task-proyect.dto';
-import { UpdateTaskProyectDto } from './DTO/update-task-proyect.dto';
-
-import { CreateTaskProyectResponseDTO } from './DTO/create-task-proyect.response.dto';
-import { ListTaskProyectItemDTO } from './DTO/list-task-proyect.response.dto';
-import { DetailTaskProyectResponseDTO } from './DTO/detail-task-proyect.response.dto';
-import { UpdateTaskProyectResponseDTO } from './DTO/update-task-proyect.response.dto';
+import { TaskProyectService } from './../service/task-proyect.service';
+import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
+import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
+import { CreateTaskProyectResponseDTO } from '../DTO/taskProeyct/create-task-proyect.response.dto';
+import { ListTaskProyectItemDTO } from '../DTO/taskProeyct/list-task-proyect.response.dto';
+import { DetailTaskProyectResponseDTO } from '../DTO/taskProeyct/detail-task-proyect.response.dto';
+import { UpdateTaskProyectResponseDTO } from '../DTO/taskProeyct/update-task-proyect.response.dto';
 
 @Controller('proyects/:proyectId/tasks')
 @UseGuards(JwtAuthGuard, ProyectRoleGuard)
@@ -36,7 +35,7 @@ export class TaskProyectController {
     return this.taskService.listByProyect(proyectId, state);
   }
 
-  @Get(':taskId')
+  @Get('/:taskId')
   @ProyectRoles('MANAGER', 'COLABORATOR')
   async detail(
     @Param('proyectId', ParseIntPipe) proyectId: number,
@@ -45,7 +44,7 @@ export class TaskProyectController {
     return this.taskService.getById(proyectId, taskId);
   }
 
-  @Patch(':taskId')
+  @Patch('/:taskId')
   @ProyectRoles('MANAGER')
   async patch(
     @Param('proyectId', ParseIntPipe) proyectId: number,
@@ -55,7 +54,7 @@ export class TaskProyectController {
     return this.taskService.patch(proyectId, taskId, dto);
   }
 
-  @Delete(':taskId')
+  @Delete('/:taskId')
   @ProyectRoles('MANAGER')
   async remove(
     @Param('proyectId', ParseIntPipe) proyectId: number,

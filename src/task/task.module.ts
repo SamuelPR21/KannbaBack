@@ -5,10 +5,10 @@ import { TaskProyect } from './Entities/task-proyect.entity';
 import { User } from '../users/users.entity';
 import { State } from '../State/state.entity';
 import { UserProyect } from '../user_Proyetc/userProyect.entity';
-import { TaskPersonalController } from './task-personal.controller';
-import { TaskPersonalService } from './task-personal.service';
-import { TaskProyectController } from './task-proyect.controller';
-import { TaskProyectService } from './task-proyect.service';
+import { TaskPersonalController } from './controller/task-personal.controller';
+import { TaskPersonalService } from './service/task-personal.service';
+import { TaskProyectController } from './controller/task-proyect.controller';
+import { TaskProyectService } from './service/task-proyect.service';
 import { ProyectRoleGuard } from '../common/guards/proyect-role.guard';
 import { AuthModule } from '../auth/auth.module'; 
 
