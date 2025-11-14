@@ -16,8 +16,8 @@ export class Pet {
 
     @Column({
         type: 'enum',
-        enum: ['FELIZ', 'CONTENTO', 'HAMBIRENTO', 'CONTETO'],
-        default: 'HAMBIRENTO',
+        enum: ['FELIZ', 'HAMBRIENTO', 'MUERTO'],
+        default: 'HAMBRIENTO',
       })
     state: string;
 

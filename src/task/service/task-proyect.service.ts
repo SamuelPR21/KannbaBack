@@ -10,6 +10,7 @@ import { CreateTaskProyectResponseDTO } from '../DTO/taskProeyct/create-task-pro
 import { ListTaskProyectItemDTO } from '../DTO/taskProeyct/list-task-proyect.response.dto';
 import { DetailTaskProyectResponseDTO } from '../DTO/taskProeyct/detail-task-proyect.response.dto';
 import { UpdateTaskProyectResponseDTO } from '../DTO/taskProeyct/update-task-proyect.response.dto';
+import { TaskHistoryService } from 'src/task_history/task-history.service';
 
 @Injectable()
 export class TaskProyectService {
@@ -20,6 +21,7 @@ export class TaskProyectService {
     private readonly userProyectRepository: Repository<UserProyect>,
     @InjectRepository(State)
     private readonly stateRepository: Repository<State>,
+    private readonly taskHistoryService: TaskHistoryService,
   ) {}
 
   //Helpers de carga con relaciones
@@ -112,7 +114,6 @@ export class TaskProyectService {
     const state = await this.stateRepository.findOne({ where: { id: dto.stateId } });
     if (!state) throw new NotFoundException('Estado no encontrado');
 
-    // Crear
     const task = this.taskProyectRepository.create({
       name: dto.name,
       description: dto.description,
@@ -125,7 +126,6 @@ export class TaskProyectService {
     return this.toCreateResponse(full);
   }
 
-  // Listar (opcionalmente por estado)
   async listByProyect(proyectId: number, stateName?: 'BACKLOG' | 'TO_DO' | 'DOING' | 'DONE'): Promise<ListTaskProyectItemDTO[]> {
     const qb = this.taskProyectRepository
       .createQueryBuilder('t')
@@ -166,10 +166,18 @@ export class TaskProyectService {
       task.userProyect = newUP;
     }
 
-    if (dto.stateId !== undefined) {
-      const newState = await this.stateRepository.findOne({ where: { id: dto.stateId } });
-      if (!newState) throw new NotFoundException('Nuevo estado no encontrado');
+    if(dto.stateId !== undefined){
+      const newState = await this.stateRepository.findOne({where: {id: dto.stateId}});
+      if(!newState) throw new NotFoundException('Nuevo estado no encontrado');
+
+      const oldStateId = task.state.id;
       task.state = newState;
+
+      await this.taskHistoryService.registerChange({
+        taskProyectId: task.id,
+        oldStateId: oldStateId,
+        newStateId: newState.id,
+      })
     }
 
     const saved = await this.taskProyectRepository.save(task);
@@ -177,7 +185,7 @@ export class TaskProyectService {
     return this.toUpdateResponse(full);
   }
 
-  // Eliminar (puedes mantener vacío el body; no necesita DTOresponse)
+
   async remove(proyectId: number, taskId: number): Promise<{ message: string }> {
     const task = await this.loadTaskWithRelationsOrFail(taskId);
     this.ensureSameProjectOrThrow(task.userProyect, proyectId);

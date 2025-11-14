@@ -6,6 +6,7 @@ import { User } from '../../users/users.entity';
 import { State } from '../../State/state.entity';
 import { CreateTaskPersonalDto } from '../DTO/taskPersonal/create-task-personal.dto';
 import { UpdateTaskPersonalDto } from '../DTO/taskPersonal/update-task-personal.dto';
+import { TaskHistoryService } from 'src/task_history/task-history.service';
 
 @Injectable()
 export class TaskPersonalService {
@@ -16,6 +17,7 @@ export class TaskPersonalService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(State)
     private readonly stateRepository: Repository<State>,
+    private readonly taskHistoryService: TaskHistoryService,
   ) {}
 
   //  Crear tarea
@@ -60,10 +62,18 @@ export class TaskPersonalService {
     if (dto.name) task.name = dto.name;
     if (dto.description) task.description = dto.description;
 
-    if (dto.stateId) {
+    if (dto.stateId !== undefined) {
       const state = await this.stateRepository.findOne({ where: { id: dto.stateId } });
-      if (!state) throw new NotFoundException('Estado no encontrado');
+      if (!state) throw new NotFoundException('Nuevo Estado no encontradp');
+      
+      const oldStateId = task.state.id;
       task.state = state;
+
+      await this.taskHistoryService.registerChange({
+        taskPersonalId: task.id,
+        oldStateId: oldStateId,
+        newStateId: state.id,
+      })
     }
 
     return await this.taskRepository.save(task);

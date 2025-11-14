@@ -11,7 +11,6 @@ export class CreateTaskProyectDto {
   @IsNotEmpty() @IsInt()
   userProyectId: number;
 
-  // estado (por id)
   @IsNotEmpty() @IsInt()
   stateId: number;
 }

@@ -11,6 +11,7 @@ import { TaskProyectController } from './controller/task-proyect.controller';
 import { TaskProyectService } from './service/task-proyect.service';
 import { ProyectRoleGuard } from '../common/guards/proyect-role.guard';
 import { AuthModule } from '../auth/auth.module'; 
+import { TaskHistoryModule } from 'src/task_history/task-history.module';
 
 @Module({
   imports: [
@@ -20,8 +21,10 @@ import { AuthModule } from '../auth/auth.module';
       User,
       State,
       UserProyect,
+      
     ]),
     AuthModule,
+    TaskHistoryModule
   ],
   controllers: [TaskPersonalController, TaskProyectController],
   providers: [TaskPersonalService, TaskProyectService, ProyectRoleGuard],
