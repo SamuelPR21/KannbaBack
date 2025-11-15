@@ -10,6 +10,7 @@ import { TaskProyect } from "src/task/Entities/task-proyect.entity";
 import { UpdateUserDto } from "./DTO/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { JwtTokenService } from "../auth/jwt.service";
+import { PetService } from "src/pet/services/pet.service";
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,7 @@ export class UsersService {
     private readonly taskPersonalRepository: Repository<TaskPersonal>,
     @InjectRepository(TaskProyect)
     private readonly taskProyectRepository: Repository<TaskProyect>,
+    private readonly petService: PetService,
   ) {}
 
   async register(dto: CreateUserDto) {
@@ -31,16 +33,26 @@ export class UsersService {
     });
 
     if (exists)
-      throw new ConflictException("El usuario o correo ya está registrado");
+      throw new ConflictException("El nombre de ususario o correo ya está registrado");
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const newUser = this.userRepository.create({
       ...dto,
       password: hashedPassword,
     });
-
+ 
     const savedUser = await this.userRepository.save(newUser);
-    return savedUser;
+
+    const pet = await this.petService.createPetForUser(savedUser);
+    savedUser.pet = pet;
+
+    return {
+      id: savedUser.id,
+      username: savedUser.username,
+      nameComlpete: savedUser.nameComlpete,
+      email: savedUser.email,
+      pet: pet.id,
+    };
   }
 
   async login(dto: LoginUserDto) {

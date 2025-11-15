@@ -5,9 +5,10 @@ import { UsersController } from "./users.controller";
 import { User } from "./users.entity";
 import { AuthModule } from "../auth/auth.module";
 import { TaskModule } from "src/task/task.module";
+import { PetModule } from "src/pet/pet.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule, TaskModule],
+  imports: [TypeOrmModule.forFeature([User]), AuthModule, TaskModule, PetModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService, TypeOrmModule.forFeature([User])],

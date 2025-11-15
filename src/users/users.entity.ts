@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne, OneToMany } from "typeorm";
-import { Pet } from "../pet/pet.entity";
+import { Pet } from "../pet/entities/pet.entity";
 import { UserProyect } from "../user_Proyetc/userProyect.entity";
 import { TaskPersonal } from "../task/Entities/task-personal.entity";
 

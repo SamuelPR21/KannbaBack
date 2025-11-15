@@ -11,9 +11,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('/register')
-  async register(@Body() dto: CreateUserDto, @Res() res: Response) {
-    const user = await this.usersService.register(dto);
-    return res.json({ message: 'Usuario registrado correctamente', user });
+  async register(@Body() dto: CreateUserDto) {
+   return  await this.usersService.register(dto);
   }
 
   @Post('/login')

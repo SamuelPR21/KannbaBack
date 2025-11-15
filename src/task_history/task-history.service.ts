@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, Not, IsNull } from "typeorm";
+import { Between } from "typeorm";
 import { TaskHistory } from "./task-history.entity";
 import { TaskPersonal } from "src/task/Entities/task-personal.entity";
 import { TaskProyect } from "src/task/Entities/task-proyect.entity";
@@ -74,6 +75,29 @@ export class TaskHistoryService {
           });
         }
       }
+
+
+      async countDoneTodayByUser(userId: number) : Promise<number> {{
+        const start = new Date(); 
+        const end = new Date();
+        start.setHours(0, 0, 0, 0); 
+        end.setHours(23, 59, 59, 999);
+
+        const queryBuilder = this.historyRepo
+          .createQueryBuilder('history')
+          .leftJoin('history.taskPersonal', 'taskPersonal')
+          .leftJoin('taskPersonal.user', 'user')
+          .leftJoin('history.taskProyect', 'taskProyect')
+          .leftJoin('taskProyect.userProyect', 'userProyect')
+          .leftJoin('userProyect.user', 'userUserProyect')
+          .leftJoin('history.newState', 'newState')
+          .where('newState.name = :done', { done: 'DONE' })
+          .where('history.changedAt BETWEEN :start AND :end', { start, end })
+          .andWhere('(user.id = :userId OR userUserProyect.id = :userId)', { userId });
+
+          const count = await queryBuilder.getCount();
+          return count;
+      
+        }
     }
-
-
+}

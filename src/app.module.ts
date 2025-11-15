@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthModule } from './auth/auth.module'; 
 import { UserProyectModule } from './user_Proyetc/userProyect.module';
 import { TaskHistoryModule } from './task_history/task-history.module';
-
+import { PetModule } from './pet/pet.module';
 
 @Module({
   imports: [
@@ -25,7 +25,8 @@ import { TaskHistoryModule } from './task_history/task-history.module';
     ProyectModule,
     RoleModule,
     AuthModule, 
-    TaskHistoryModule
+    TaskHistoryModule,
+    PetModule
   ],
   providers: [
     {

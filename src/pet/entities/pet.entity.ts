@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "typeorm";
-import { User } from "../users/users.entity";
+import { User } from "../../users/users.entity";
 
 
 @Entity('pet')
@@ -20,12 +20,9 @@ export class Pet {
         default: 'HAMBRIENTO',
       })
     state: string;
-
+  
     @Column()
-    weightKg: number;
-
-    @Column()
-    date_last_meal: Date;
+    date_creation: Date;
     
     @OneToOne(() => User, (user) => user.pet)
     user: User;
