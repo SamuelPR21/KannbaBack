@@ -20,7 +20,7 @@ export class UsersController {
     const { token, user} = await this.usersService.login(dto);
     res.setHeader("Authorization", `Bearer ${token}`);
     res.setHeader("Access-control-Expose-Headers", "Authorization");
-    return res.json({message: "Inicio de sesión exitoso", user});
+    return res.json({message: "Inicio de sesión exitoso"});
   }
 
   @Get('/:id')
