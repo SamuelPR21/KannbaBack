@@ -72,6 +72,8 @@ export class UsersService {
       username: user.username,
       nameComlpete: user.nameComlpete,
       email: user.email,
+      dateOfBirth: user.dateOfBirth,
+
     };
 
     const token = this.jwtTokenService.generateToken(payload);
