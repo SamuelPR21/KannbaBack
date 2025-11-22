@@ -2,8 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { TaskPersonalService } from '../service/task-personal.service';
 import { CreateTaskPersonalDto } from '../DTO/taskPersonal/create-task-personal.dto';
 import { UpdateTaskPersonalDto } from '../DTO/taskPersonal/update-task-personal.dto';
+import { UserId } from 'src/common/decorator/user-id.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import {TaskPersonalMapper} from "../DTO/mapperTaskPersonal/task-personal.mapper";
+
 
 @Controller('/task-personal')
+@UseGuards(JwtAuthGuard)
 export class TaskPersonalController {
   constructor(private readonly taskService: TaskPersonalService) {}
 
@@ -17,6 +23,12 @@ export class TaskPersonalController {
   async getAll() {
     const tasks = await this.taskService.getAllTasks();
     return { tasks };
+  }
+  
+  @Get('/my-tasks')
+  async getByUser(@UserId() userId: number) {
+    const tasks = await this.taskService.getTasksByUserId(userId);
+    return { tasks: TaskPersonalMapper.toResponseList(tasks) };
   }
 
   @Get('/:id')
@@ -36,4 +48,5 @@ export class TaskPersonalController {
     await this.taskService.deleteTask(id);
     return { message: 'Tarea eliminada correctamente' };
   }
+
 }

@@ -20,7 +20,6 @@ export class TaskPersonalService {
     private readonly taskHistoryService: TaskHistoryService,
   ) {}
 
-  //  Crear tarea
   async createTask(dto: CreateTaskPersonalDto) {
     const user = await this.userRepository.findOne({ where: { id: dto.userId } });
     if (!user) throw new NotFoundException('Usuario no encontrado');
@@ -83,5 +82,15 @@ export class TaskPersonalService {
   async deleteTask(id: number) {
     const task = await this.getTaskById(id);
     return await this.taskRepository.remove(task);
+  }
+
+  async getTasksByUserId(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+
+    return await this.taskRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'state'],
+    });
   }
 }
