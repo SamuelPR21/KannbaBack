@@ -8,6 +8,7 @@ import { Category } from "src/category/category.entity";
 import { User } from "src/users/users.entity";
 import { Role } from "src/role/role.entity";
 import { UserProyect } from "src/user_Proyetc/userProyect.entity";
+import { TaskProyect } from "src/task/Entities/task-proyect.entity";
 
 @Injectable()
 export class ProyectService{
@@ -22,6 +23,8 @@ export class ProyectService{
         private readonly roleRepository: Repository<Role>,
         @InjectRepository(UserProyect)
         private readonly userProyectRepository: Repository<UserProyect>,
+        @InjectRepository(TaskProyect)
+        private readonly taskProyectRepository: Repository<TaskProyect>,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -114,13 +117,46 @@ export class ProyectService{
         
     }
 
-    async deleteProyect(id: number): Promise<void> {
-        const result = await this.proyectRepository.delete(id);
-        if (result.affected === 0) {
-            throw new NotFoundException(`Proyect with ID ${id} not found`);
+async deleteProyect(id: number): Promise<{ message: string }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+        const proyect = await queryRunner.manager.findOne(Proyect, { where: { id } });
+
+        if (!proyect) {
+            throw new NotFoundException(`El proyecto con ID ${id} no existe.`);
         }
-        return;
+
+        const userProyects = await queryRunner.manager.find(UserProyect, {
+            where: { proyect: { id } },
+            relations: ['taskProyect'],
+        });
+
+        for (const up of userProyects) {
+            await queryRunner.manager.delete("task_proyect", {
+                userProyect: { id: up.id },
+            });
+        }
+
+        await queryRunner.manager.delete(UserProyect, { proyect: { id } });
+
+        await queryRunner.manager.delete(Proyect, { id });
+
+        await queryRunner.commitTransaction();
+
+        return { message: `Proyecto con ID ${id} eliminado correctamente.` };
+
+    } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw error;
+    } finally {
+        await queryRunner.release();
     }
+}
+
+
 
     async updateProyect(id: number, proyectRequestDTO: ProyectRequestDTO): Promise<ProyectResponseDTO> {
         const proyect = await this.proyectRepository.findOne({ where: { id }, relations: ['category'],});
