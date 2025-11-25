@@ -27,8 +27,6 @@ export class UserProyectController {
    
     }
 
-
-
      @Get('/listProyect')
     async getProyectsByUserId(@UserId() userId: number) {
         try {
