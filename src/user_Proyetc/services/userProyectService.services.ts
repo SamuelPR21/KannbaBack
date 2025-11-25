@@ -10,6 +10,7 @@ import { UserProyectRequestDTO } from "../DTO/userProyectRequest.dto";
 import { UserByProyectResponseDTO } from "../DTO/UserByProyectResposeDTO.dto";
 import { ProyectByUserResponseDTO } from "../DTO/ProyectByUserResponseDTO.dto";
 import { AssigUserToProyectDTO } from "../DTO/AssigUserToProyectDTO.dto";
+import { UserNotInProyectResponseDTO } from "../DTO/UserNotInProyectResponse.dto";
 
 @Injectable()
 export class UserProyectService {
@@ -80,6 +81,24 @@ export class UserProyectService {
         }),
     );
   }
+  
+async listAllUserNotInProyect(proyectId: number): Promise<UserNotInProyectResponseDTO[]> {
+  const users = await this.userRepository
+    .createQueryBuilder('user')
+    .where(qb => {
+      const sq = qb.subQuery()
+        .select('up.user_id')
+        .from(UserProyect, 'up')
+        .where('up.proyect_id = :proyectId')
+        .getQuery();
+      return `user.id NOT IN ${sq}`;
+    })
+    .setParameter('proyectId', proyectId)
+    .getMany();
+
+  return users.map(u => new UserNotInProyectResponseDTO(u));
+}
+
 
   /**
    * Lista proyectos a los que pertenece un usuario (con su rol en cada uno).

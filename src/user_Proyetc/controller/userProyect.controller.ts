@@ -6,6 +6,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProyectRoleGuard } from "src/common/guards/proyect-role.guard";
 import { ProyectRoles } from "src/common/decorator/proyect-role.decorator";
 import { AssigUserToProyectDTO } from "../DTO/AssigUserToProyectDTO.dto";
+import {UserId} from "../../common/decorator/user-id.decorator";
 
 
 @Controller('/user-proyect')
@@ -26,6 +27,29 @@ export class UserProyectController {
    
     }
 
+
+
+     @Get('/listProyect')
+    async getProyectsByUserId(@UserId() userId: number) {
+        try {
+            return this.userProyectService.listAllProyectsByUser(userId);
+        } catch (err) {
+            console.error('Error fetching proyects by user ID:', err);
+            throw err;
+        }
+    }
+
+
+    @Get('/userNot/:proyectId')
+    async getUsersNotInProyect(@Param('proyectId', ParseIntPipe) proyectId: number) {
+        try {
+            return this.userProyectService.listAllUserNotInProyect(proyectId);
+        } catch (err) {
+            console.error('Error fetching users not in proyect:', err);
+            throw err;
+        }
+    }
+
     
     @Get('/listUser/:proyectId')
     @ProyectRoles('MANAGER')
@@ -34,16 +58,6 @@ export class UserProyectController {
             return this.userProyectService.listAllUserByProyect(proyectId);
         } catch (err) {
             console.error('Error fetching users by proyect ID:', err);
-            throw err;
-        }
-    }
-
-    @Get('/listProyect/:userId')
-    async getProyectsByUserId(@Param('userId', ParseIntPipe) userId: number) {
-        try {
-            return this.userProyectService.listAllProyectsByUser(userId);
-        } catch (err) {
-            console.error('Error fetching proyects by user ID:', err);
             throw err;
         }
     }

@@ -140,5 +140,6 @@ export class UsersService {
       progressPercentage: Math.round(progressPercentage),
     }
   }
+  
 
 }
