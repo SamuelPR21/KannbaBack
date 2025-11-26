@@ -50,7 +50,6 @@ export class UserProyectController {
 
     
     @Get('/listUser/:proyectId')
-    @ProyectRoles('MANAGER')
     async getUsersByProyectId(@Param('proyectId', ParseIntPipe) proyectId: number) {
         try {
             return this.userProyectService.listAllUserByProyect(proyectId);
