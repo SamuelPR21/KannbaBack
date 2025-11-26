@@ -8,8 +8,8 @@ export class UpdateTaskProyectDto {
   description?: string;
 
   @IsOptional() @IsInt()
-  userProyectId?: number; // cambiar responsable
+  userProyectId?: number;
 
   @IsOptional() @IsInt()
-  stateId?: number; // cambiar estado
+  stateId?: number; 
 }

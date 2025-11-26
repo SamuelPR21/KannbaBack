@@ -1,14 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import type { Response } from "express";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./DTO/create-user.dto";
 import { LoginUserDto } from "./DTO/login-user.dto";
 import { UpdateUserDto } from "./DTO/update-user.dto";
 import { UserProgressResponseDTO } from "./DTO/user-progress-response.dto";
+import {UserId} from "../common/decorator/user-id.decorator";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
+import { ProyectRoleGuard } from "src/common/guards/proyect-role.guard";
+
 
 @Controller('/users')
+@UseGuards(JwtAuthGuard, ProyectRoleGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('/progress')
+  async getUserProgress(@UserId() userId:number, @Query('state')state: string): Promise<UserProgressResponseDTO> {
+    const stateName = state?.toUpperCase() || 'DONE';
+    return this.usersService.getUserProgress(userId, stateName);
+  }
 
   @Post('/register')
   async register(@Body() dto: CreateUserDto) {
@@ -41,9 +52,5 @@ export class UsersController {
     return { message: 'Usuario eliminado correctamente' };
   }
 
-  @Get('/:id/progress')
-  async getUserProgress(@Param('id') userId:number, @Query('state')state: string): Promise<UserProgressResponseDTO> {
-    const stateName = state?.toUpperCase() || 'DONE';
-    return this.usersService.getUserProgress(userId, stateName);
-  }
+
 }

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { TaskHistoryService } from './task-history.service';
 import { CreateTaskHistoryDto } from './task-history.dto';
 
-@Controller('task-history')
+@Controller('/task-history')
 export class TaskHistoryController {
   constructor(private readonly service: TaskHistoryService) {}
 

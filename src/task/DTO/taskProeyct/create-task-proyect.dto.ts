@@ -7,7 +7,6 @@ export class CreateTaskProyectDto {
   @IsOptional() @IsString()
   description?: string;
 
-  // responsable = registro en user_proyect
   @IsNotEmpty() @IsInt()
   userProyectId: number;
 

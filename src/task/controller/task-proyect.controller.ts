@@ -1,9 +1,7 @@
-// src/task/task-proyect.controller.ts
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProyectRoleGuard } from 'src/common/guards/proyect-role.guard';
 import { ProyectRoles } from 'src/common/decorator/proyect-role.decorator';
-
 import { TaskProyectService } from './../service/task-proyect.service';
 import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
 import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';
@@ -27,7 +25,7 @@ export class TaskProyectController {
   }
 
   @Get()
-  @ProyectRoles('MANAGER', 'COLABORATOR')
+  @ProyectRoles('MANAGER', 'COLABORADOR')
   async list(
     @Param('proyectId', ParseIntPipe) proyectId: number,
     @Query('state') state?: 'BACKLOG' | 'TO_DO' | 'DOING' | 'DONE',
@@ -36,7 +34,7 @@ export class TaskProyectController {
   }
 
   @Get('/:taskId')
-  @ProyectRoles('MANAGER', 'COLABORATOR')
+  @ProyectRoles('MANAGER', 'COLABORADOR')
   async detail(
     @Param('proyectId', ParseIntPipe) proyectId: number,
     @Param('taskId', ParseIntPipe) taskId: number,

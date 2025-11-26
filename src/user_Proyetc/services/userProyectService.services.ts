@@ -128,12 +128,29 @@ async listAllUserNotInProyect(proyectId: number): Promise<UserNotInProyectRespon
    * Elimina una relación user_proyect por su ID.
    */
   async deleteUserProyect(id: number): Promise<{ message: string }> {
+  try {
     const result = await this.userProyectRepository.delete(id);
+
     if (result.affected === 0) {
       throw new NotFoundException(`UserProyect con ID ${id} no encontrado.`);
     }
+
     return { message: 'UserProyect eliminado correctamente.' };
+
+  } catch (error) {
+
+    // Error por violación de llave foránea (tiene tareas asignadas)
+    if (error.code === '23503') {
+      throw new ConflictException(
+        'No se puede eliminar este integrante porque tiene tareas asignadas.'
+      );
+    }
+
+    // Otros errores no controlados
+    throw error;
   }
+}
+
 
   /**
    * Cambia el rol de un usuario dentro de un proyecto.
