@@ -1,9 +1,7 @@
-// src/task/task-proyect.controller.ts
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ProyectRoleGuard } from 'src/common/guards/proyect-role.guard';
 import { ProyectRoles } from 'src/common/decorator/proyect-role.decorator';
-
 import { TaskProyectService } from './../service/task-proyect.service';
 import { CreateTaskProyectDto } from '../DTO/taskProeyct/create-task-proyect.dto';
 import { UpdateTaskProyectDto } from '../DTO/taskProeyct/update-task-proyect.dto';

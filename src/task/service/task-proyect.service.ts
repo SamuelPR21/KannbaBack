@@ -93,6 +93,7 @@ export class TaskProyectService {
     return new ListTaskProyectItemDTO({
       taskId: task.id,
       name: task.name,
+      description: task.description,
       state: task.state.name as any,
       responsible: {
         userProyectId: task.userProyect.id,
@@ -141,14 +142,12 @@ export class TaskProyectService {
     return tasks.map((t) => this.toListItem(t));
   }
 
-  // Detalle
   async getById(proyectId: number, taskId: number): Promise<DetailTaskProyectResponseDTO> {
     const task = await this.loadTaskWithRelationsOrFail(taskId);
     this.ensureSameProjectOrThrow(task.userProyect, proyectId);
     return this.toDetailResponse(task);
   }
 
-  // Patch
   async patch(proyectId: number, taskId: number, dto: UpdateTaskProyectDto): Promise<UpdateTaskProyectResponseDTO> {
     const task = await this.loadTaskWithRelationsOrFail(taskId);
     this.ensureSameProjectOrThrow(task.userProyect, proyectId);

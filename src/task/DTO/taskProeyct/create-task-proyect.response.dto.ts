@@ -1,4 +1,3 @@
-// src/task/DTO/responses/create-task-proyect.response.dto.ts
 export class CreateTaskProyectResponseDTO {
   taskId: number;
   proyectId: number;

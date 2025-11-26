@@ -12,7 +12,7 @@ export class TaskHistory {
     @JoinColumn({ name: 'task_personal_id' })
     taskPersonal?: TaskPersonal;
     
-    @ManyToOne(() => TaskProyect, { nullable: true })
+    @ManyToOne(() => TaskProyect, { nullable: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'task_proyect_id' })
     taskProyect?: TaskProyect;
     

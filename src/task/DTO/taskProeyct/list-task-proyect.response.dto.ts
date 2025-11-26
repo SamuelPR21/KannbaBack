@@ -1,7 +1,7 @@
-// src/task/DTO/responses/list-task-proyect.response.dto.ts
 export class ListTaskProyectItemDTO {
   taskId: number;
   name: string;
+  description: string;
   state: 'BACKLOG' | 'TO_DO' | 'DOING' | 'DONE';
   responsible: {
     userProyectId: number;
