@@ -27,7 +27,7 @@ export class TaskProyectController {
   }
 
   @Get()
-  @ProyectRoles('MANAGER', 'COLABORATOR')
+  @ProyectRoles('MANAGER', 'COLABORADOR')
   async list(
     @Param('proyectId', ParseIntPipe) proyectId: number,
     @Query('state') state?: 'BACKLOG' | 'TO_DO' | 'DOING' | 'DONE',
@@ -36,7 +36,7 @@ export class TaskProyectController {
   }
 
   @Get('/:taskId')
-  @ProyectRoles('MANAGER', 'COLABORATOR')
+  @ProyectRoles('MANAGER', 'COLABORADOR')
   async detail(
     @Param('proyectId', ParseIntPipe) proyectId: number,
     @Param('taskId', ParseIntPipe) taskId: number,
