@@ -1,16 +1,24 @@
-import { Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
-import { Body, Controller } from "@nestjs/common";
+import {
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+  Body,
+  Controller,
+} from "@nestjs/common";
 import { UserProyectService } from "../services/userProyectService.services";
 import { UserProyectRequestDTO } from "../DTO/userProyectRequest.dto";
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { ProyectRoleGuard } from "src/common/guards/proyect-role.guard";
 import { ProyectRoles } from "src/common/decorator/proyect-role.decorator";
 import { AssigUserToProyectDTO } from "../DTO/AssigUserToProyectDTO.dto";
-import {UserId} from "../../common/decorator/user-id.decorator";
+import { UserId } from "../../common/decorator/user-id.decorator";
 
-
-@Controller('/user-proyect')
-@UseGuards(JwtAuthGuard, ProyectRoleGuard)
+@Controller("/user-proyect")
+@UseGuards(JwtAuthGuard)   // ⬅️ SOLO JWT AQUÍ
 export class UserProyectController {
     constructor(private readonly userProyectService: UserProyectService,) 
     {}
