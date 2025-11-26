@@ -7,9 +7,10 @@ import { PetController } from "./controller/pet.controller";
 import { TaskHistoryModule } from "src/task_history/task-history.module";
 import { User } from "src/users/users.entity";
 import { TaskHistoryService } from "src/task_history/task-history.service";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Pet, PetFeed, User]), TaskHistoryModule
+    imports: [TypeOrmModule.forFeature([Pet, PetFeed, User]), TaskHistoryModule, AuthModule
                 ],
     controllers: [PetController],
     providers: [PetService],
